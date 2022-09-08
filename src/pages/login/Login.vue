@@ -111,15 +111,21 @@ export default {
     afterLogin(res) {
       this.logging = false
       const loginRes = res.data
+
       if (loginRes.code >= 0) {
-        const {user, permissions, roles} = loginRes.data
+        const {user, permissions, roles, token} = loginRes.data
+        console.log(user);
         this.setUser(user)
         this.setPermissions(permissions)
         this.setRoles(roles)
-        setAuthorization({token: loginRes.data.token, expireAt: new Date(loginRes.data.expireAt)})
+        let result = {message:"",data:{}};
+        result.data.expireAt = new Date(new Date().getTime() + 30 * 60 * 1000)
+        setAuthorization({token: token, expireAt: new Date(result.data.expireAt)})
         // 获取路由配置
         getRoutesConfig().then(result => {
-          const routesConfig = result.data.data
+          // const routesConfig = result.data.data
+          console.log(result)
+          const routesConfig =  [];
           loadRoutes(routesConfig)
           this.$router.push('/dashboard/workplace')
           this.$message.success(loginRes.message, 3)

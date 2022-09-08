@@ -47,8 +47,8 @@ import {request, METHOD} from '@/utils/request'
  */
 async function login(name, password) {
   return request(LOGIN, METHOD.POST, {
-    name: name,
-    password: password
+      userName: name, 
+      password: password
   })
 }
 ```

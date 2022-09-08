@@ -14,7 +14,11 @@ const routesConfig = [
     router: 'exp403',
     path: '/403',
     name: '403'
-  }
+  },
+  {
+    router: 'dashboard',
+    children: ['workplace', 'analysis'],
+  },
 ]
 
 const options = {
