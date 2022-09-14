@@ -6,7 +6,7 @@
         :labelCol="{span: 7}"
         :wrapperCol="{span: 10}"
       >
-        <a-input :placeholder="$t('titleInput')" />
+        <a-input  :placeholder="$t('titleInput')" />
       </a-form-item>
       <a-form-item
         :label="$t('date')"

@@ -88,6 +88,11 @@ export default {
 </script>
 
 <style lang="less" scoped>
+html, body, #app {
+  height: 100%;
+  margin: 0px;
+  padding: 0px;
+}
   #id{
   }
 </style>
