@@ -15,7 +15,7 @@
               slot="loadMore"
               :style="{ textAlign: 'center', marginTop: '12px', height: '32px', lineHeight: '32px' }"
           >
-            <a-spin v-if="loadingMore" />
+            <a-spin v-if="loadingMore"/>
             <a-button v-else @click="onLoadMore">
               loading more
             </a-button>
@@ -32,9 +32,13 @@
     </div>
     <div id="panel">
       <p>输入关键字，将展示相关地点提示，点击提示可定位到该处。</p>
-      <input id='keyword' type="text" value='' @input="getSuggestions()"><input id="search" type="button" class="btn" value="搜索" onclick="searchByKeyword()" />
+      <input id='keyword' type="text" value='' @input="getSuggestions()"><input id="search" type="button" class="btn"
+                                                                                value="搜索"
+                                                                                onclick="searchByKeyword()"/>
       <ul id="idSuggestionList">
-        <li v-for="(item, index) in suggestionList" :key="index"><a href="#" @click="setSuggestion(index)">{{item.title}}<span class="item_info">{{item.address}}</span></a></li>
+        <li v-for="(item, index) in suggestionList" :key="index"><a href="#"
+                                                                    @click="setSuggestion(index)">{{ item.title }}<span
+            class="item_info">{{ item.address }}</span></a></li>
       </ul>
     </div>
     <a-drawer
@@ -50,37 +54,69 @@
       <a-form :form="form" class="form">
         <a-form-item
             label="经度"
-            :labelCol="{span: 2}"
+            :labelCol="{span: 3}"
             :wrapperCol="{span: 10}"
         >
-          <a-input v-model="formData.lng" :placeholder="$t('titleInput')" />
+          <a-input v-model="formData.lng" :placeholder="$t('titleInput')"/>
         </a-form-item>
         <a-form-item
             label="维度"
-            :labelCol="{span: 2}"
+            :labelCol="{span: 3}"
             :wrapperCol="{span: 10}"
         >
           <a-input v-model="formData.lat" :placeholder="$t('titleInput')"/>
         </a-form-item>
         <a-form-item
             label="名称"
-            :labelCol="{span: 2}"
+            :labelCol="{span: 3}"
             :wrapperCol="{span: 10}"
             :required="false"
         >
           <a-input v-model="formData.name" :placeholder="$t('customerInput')"/>
         </a-form-item>
         <a-form-item
-            label="process"
-            :labelCol="{span: 2}"
+            label="工程名称"
+            :labelCol="{span: 3}"
             :wrapperCol="{span: 10}"
             :required="false"
         >
-          <a-input v-model="formData.process" :placeholder="$t('criticsInput')"/>
+          <a-input v-model="formData.projectName" :placeholder="$t('criticsInput')"/>
         </a-form-item>
         <a-form-item
-            :label="$t('weight')"
-            :labelCol="{span: 2}"
+            label="工程内容"
+            :labelCol="{span: 3}"
+            :wrapperCol="{span: 10}"
+            :required="false"
+        >
+          <a-textarea v-model="formData.projectContent" :placeholder="$t('criticsInput')"/>
+        </a-form-item>
+        <a-form-item
+            label="责任单位"
+            :labelCol="{span: 3}"
+            :wrapperCol="{span: 10}"
+            :required="false"
+        >
+          <a-input v-model="formData.projectUnit" :placeholder="$t('criticsInput')"/>
+        </a-form-item>
+        <a-form-item
+            label="施工年限"
+            :labelCol="{span: 3}"
+            :wrapperCol="{span: 10}"
+            :required="false"
+        >
+          <a-input v-model="formData.projectPeriod" :placeholder="$t('criticsInput')"/>
+        </a-form-item>
+        <a-form-item
+            label="影响道路"
+            :labelCol="{span: 3}"
+            :wrapperCol="{span: 10}"
+            :required="false"
+        >
+          <a-input v-model="formData.road" :placeholder="$t('criticsInput')"/>
+        </a-form-item>
+        <a-form-item
+            label="积水程度"
+            :labelCol="{span: 3}"
             :wrapperCol="{span: 10}"
             :required="false"
         >
@@ -89,8 +125,8 @@
         </a-form-item>
         <a-form-item
             label="图片"
-            :labelCol="{span: 2}"
-            :wrapperCol="{span: 20}"
+            :labelCol="{span: 3}"
+            :wrapperCol="{span: 30}"
             :required="false"
         >
           <div class="clearfix">
@@ -102,14 +138,14 @@
                 @change="handleChange"
             >
               <div v-if="fileList.length < 4">
-                <a-icon type="plus" />
+                <a-icon type="plus"/>
                 <div class="ant-upload-text">
                   Upload
                 </div>
               </div>
             </a-upload>
             <a-modal :visible="previewVisible" :footer="null" @cancel="handleCancel">
-              <img alt="example" style="width: 100%" :src="previewImage" />
+              <img alt="example" style="width: 100%" :src="previewImage"/>
             </a-modal>
           </div>
         </a-form-item>
@@ -123,6 +159,7 @@
 </template>
 <script>
 import {request, METHOD} from '@/utils/request'
+
 function getBase64(file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -131,12 +168,11 @@ function getBase64(file) {
     reader.onerror = error => reject(error);
   });
 }
+
 export default {
   name: 'jishui',
-  components: {
-
-  },
-  data () {
+  components: {},
+  data() {
     return {
       map: null,
       markerLayer: null,
@@ -187,13 +223,17 @@ export default {
         lng: '',
         name: '',
         area: '',
+        road: '',
+        projectName: '',
+        projectContent: '',
+        projectUnit: '',
+        projectPeriod: '',
         process: '',
         pictures: [],
       }
     }
   },
-  computed: {
-  },
+  computed: {},
   mounted() {
     this.getData();
     this.initMap();
@@ -202,53 +242,55 @@ export default {
     onLoadMore() {
       this.getData();
     },
-    getData(){
+    getData() {
       this.query.page++;
       this.loading = true
-      request("/jishui/page", METHOD.GET,this.query).then((res) => {
+      request("/jishui/page", METHOD.GET, this.query).then((res) => {
         this.loading = false;
         let result = res.data.data.data;
         this.showLoadingMore = true;
-        if (result.length < this.query.size){
+        if (result.length < this.query.size) {
           this.showLoadingMore = false
         }
         this.listData = this.listData.concat(result);
         console.log(this.listData)
       })
     },
-    resetQuery(){
+    resetQuery() {
       this.query.page = 0;
       this.listData = [];
     },
-    editArea(item){
+    editArea(item) {
       let position = new window.TMap.LatLng(item.lat, item.lng)
       var infoWindow = new window.TMap.InfoWindow({
         map: this.map,
         position: position,
         content: `<h3>${item.name}</h3><p>地址：${item.address}</p><p>电话：${item.tel}</p>`,
-        offset: { x: 0, y: -50 },
+        offset: {x: 0, y: -50},
       }); // 新增信息窗体显示地标的名称与地址、电话等信息
       infoWindow.open();
       this.map.setCenter(position);
       this.formData = item;
       this.visible = true;
     },
-    async delArea(item){
-      await request("/jishui/"+item.id, METHOD.DELETE)
+    async delArea(item) {
+      await request("/jishui/" + item.id, METHOD.DELETE)
       this.resetQuery();
       this.getData()
     },
-    onClose(){
+    onClose() {
       this.visible = false;
     },
-    handleSubmit (e) {
+    handleSubmit(e) {
       e.preventDefault()
-      this.formData.pictures = this.fileList.map((item)=>{return item.url});
+      this.formData.pictures = this.fileList.map((item) => {
+        return item.url
+      });
       let that = this;
       this.form.validateFields((err, values) => {
         if (!err) {
           console.log('Received values of form: ', values)
-          request("/jishui", this.formData.id ? METHOD.PUT:METHOD.POST,this.formData).then(res => {
+          request("/jishui", this.formData.id ? METHOD.PUT : METHOD.POST, this.formData).then(res => {
             that.markerLayer.add({
               position: that.formData.latLng
             });
@@ -261,13 +303,18 @@ export default {
       })
     },
     resetForm() {
-      this.formData =  {
+      this.formData = {
         lat: '',
-            lng: '',
-            name: '',
-            area: '',
-            process: '',
-            pictures: [
+        lng: '',
+        name: '',
+        road: '',
+        projectName: '',
+        projectContent: '',
+        projectUnit: '',
+        projectPeriod: '',
+        area: '',
+        process: '',
+        pictures: [
           {
             uid: '-1',
             name: 'image.png',
@@ -305,7 +352,7 @@ export default {
       this.previewImage = file.url || file.preview;
       this.previewVisible = true;
     },
-    handleChange({ fileList }) {
+    handleChange({fileList}) {
       this.fileList = fileList;
     },
     initMap() {
@@ -328,24 +375,24 @@ export default {
       });
       //定义事件处理方法
       let that = this;
-      var clickHandler=function(evt){
+      var clickHandler = function (evt) {
         var lat = evt.latLng.getLat().toFixed(6);
         var lng = evt.latLng.getLng().toFixed(6);
-        console.log("您点击的的坐标是："+ lat + "," + lng);
+        console.log("您点击的的坐标是：" + lat + "," + lng);
         that.formData.lat = lat
         that.formData.lng = lng
         that.formData.latLng = evt.latLng
         that.visible = true;
       }
       //Map实例创建后，通过on方法绑定点击事件
-      map.on("click",clickHandler)
+      map.on("click", clickHandler)
       this.map = map;
       this.markerLayer = markerLayer;
       console.log(map);
       // this.deleteSomeInfo();
     },
     searchByKeyword() {
-      var search = new window.TMap.service.Search({ pageSize: 10 }); // 新建一个地点搜索类
+      var search = new window.TMap.service.Search({pageSize: 10}); // 新建一个地点搜索类
       var markers = new window.TMap.MultiMarker({
         map: this.map,
         geometries: [],
@@ -370,7 +417,7 @@ export default {
                 map: this.map,
                 position: item.location,
                 content: `<h3>${item.title}</h3><p>地址：${item.address}</p><p>电话：${item.tel}</p>`,
-                offset: { x: 0, y: -50 },
+                offset: {x: 0, y: -50},
               }); // 新增信息窗体显示地标的名称与地址、电话等信息
               infoWindow.close();
               infoWindowList[index] = infoWindow;
@@ -387,7 +434,7 @@ export default {
     },
     getSuggestions() {
       const {TMap} = window;
-      let {map} =this;
+      let {map} = this;
       // 新建一个地点搜索类
       const suggest = new TMap.service.Suggestion({
         // 新建一个关键字输入提示类
@@ -399,7 +446,7 @@ export default {
       var keyword = document.getElementById('keyword').value;
       if (keyword) {
         suggest
-            .getSuggestions({ keyword: keyword, location: map.getCenter() })
+            .getSuggestions({keyword: keyword, location: map.getCenter()})
             .then((result) => {
               // 以当前所输入关键字获取输入提示
               this.suggestionList = result.data;
@@ -435,7 +482,7 @@ export default {
         map: map,
         position: suggestionList[index].location,
         content: `<h3>${suggestionList[index].title}</h3><p>地址：${suggestionList[index].address}</p>`,
-        offset: { x: 0, y: -50 },
+        offset: {x: 0, y: -50},
       });
       infoWindowList.push(infoWindow);
       map.setCenter(suggestionList[index].location);
@@ -445,33 +492,34 @@ export default {
     },
     // 去除无用信息
     deleteSomeInfo() {
-    // 腾讯地图去除logo
+      // 腾讯地图去除logo
       var logo = document.querySelector(
           "#QQMap > div > div:nth-child(2) > div:nth-child(1) > div:nth-child(2)"
       );
       logo.setAttribute("style", "display: none;");
-    // 腾讯地图去除logo文字
+      // 腾讯地图去除logo文字
       var logoText = document.getElementsByClassName("logo-text");
       logoText[0].setAttribute("style", "display: none;");
-    // 腾讯地图去除罗盘
+      // 腾讯地图去除罗盘
       var logoCompass = document.getElementsByClassName("rotate-circle");
       logoCompass[0].setAttribute("style", "display: none;");
-    // 获取缩放控件实例
+      // 获取缩放控件实例
       let control = this.map.getController(window.TMap.constants.DEFAULT_CONTROL_ID.ZOOM);
-    // 设置控件在右下角
+      // 设置控件在右下角
       control.setPosition(window.TMap.constants.CONTROL_POSITION.BOTTOM_RIGHT);
-    // 缩放控件显示缩放级别
+      // 缩放控件显示缩放级别
       control.setNumVisible(true);
     }
   }
 }
 </script>
 <style lang="less" scoped>
-.background{
+.background {
   width: 100%;
   height: 100%;
   position: relative;
   margin: 10px;
+
   .box {
     position: absolute;
     left: 0;
@@ -481,8 +529,9 @@ export default {
     width: 200px;
     height: 100%;
     overflow: hidden;
-    background-color: rgba(128,128,128,0.8);
-    .left-list{
+    background-color: rgba(128, 128, 128, 0.8);
+
+    .left-list {
       width: 100%;
       height: 100%;
       overflow: auto;
@@ -493,7 +542,7 @@ export default {
 #panel {
   position: absolute;
   background: #FFF;
-  width:350px;
+  width: 350px;
   padding: 20px;
   z-index: 1001;
   top: 0px;
@@ -515,9 +564,9 @@ export default {
   display: block;
 }
 
-#suggestionList li .item_info{
+#suggestionList li .item_info {
   font-size: 12px;
-  color:grey;
+  color: grey;
 
 }
 
